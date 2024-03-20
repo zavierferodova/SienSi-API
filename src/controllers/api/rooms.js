@@ -22,7 +22,7 @@ async function getRoomPagination (req, res) {
       total: totalRooms,
       limit: currentLimit,
       page: currentPage,
-      pages: totalPages
+      totalPages
     }
 
     return responseMaker(res, data, {
@@ -40,12 +40,7 @@ async function getRoomPagination (req, res) {
 async function getRoom (req, res) {
   try {
     const { id } = req.params
-
-    const room = await Room.findByPk(id, {
-      attributes: {
-        exclude: ['password']
-      }
-    })
+    const room = await Room.findByPk(id)
 
     if (!room) {
       return responseMaker(res, null, {
@@ -103,9 +98,17 @@ function updateRoom (req, res) {
       const { name, description } = req.body
       const room = await Room.findByPk(id)
 
-      room.name = name
-      room.description = description
-      await room.save()
+      if (!room) {
+        return responseMaker(res, null, {
+          ...responses.notFound,
+          message: 'Room not found'
+        })
+      }
+
+      await room.update({
+        name,
+        description
+      })
 
       const data = {
         room
@@ -128,8 +131,15 @@ function deleteRoom (req, res) {
   try {
     return validationResponseMaker(req, res, async () => {
       const { id } = req.params
-
       const room = await Room.findByPk(id)
+
+      if (!room) {
+        return responseMaker(res, null, {
+          ...responses.notFound,
+          message: 'Room not found'
+        })
+      }
+
       await room.destroy()
 
       const data = {

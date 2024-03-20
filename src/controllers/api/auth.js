@@ -8,7 +8,7 @@ const config = require('../../config')
 
 function register (req, res) {
   try {
-    validationResponseMaker(req, res, async () => {
+    return validationResponseMaker(req, res, async () => {
       const { name, email, password } = req.body
 
       const newUser = await User.create({
@@ -58,13 +58,19 @@ function login (req, res) {
       })
 
       if (!data) {
-        throw new Error('User not found')
+        return responseMaker(res, null, {
+          ...responses.notFound,
+          message: 'User not found'
+        })
       }
 
       const passwordIsValid = bycrypt.compareSync(password, data.password)
 
       if (!passwordIsValid) {
-        throw new Error('Invalid password')
+        return responseMaker(res, null, {
+          ...responses.unauthorized,
+          message: 'Invalid password'
+        })
       }
 
       delete data.dataValues.password
