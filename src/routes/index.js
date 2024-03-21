@@ -5,8 +5,9 @@ const router = Router()
 
 router.use('/api', apiRouter)
 router.use('/storage', storageRouter)
+
 router.get('/', (req, res) => {
-  res.redirect('/api')
+  return res.render('index')
 })
 
 module.exports = router

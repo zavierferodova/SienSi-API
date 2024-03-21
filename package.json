@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "mix-dev": "mix",
+    "mix-watch": "mix watch",
+    "mix-prod": "mix --production",
     "migrate": "sequelize-cli db:migrate",
     "migrate:rollback": "sequelize-cli db:migrate:undo",
     "migrate:rollback:all": "sequelize-cli db:migrate:undo:all",
@@ -18,6 +21,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
     "firebase": "^10.7.1",
@@ -32,11 +36,14 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "browser-sync": "^3.0.2",
+    "browser-sync-webpack-plugin": "^2.3.0",
     "eslint": "^8.55.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-n": "^16.3.1",
     "eslint-plugin-promise": "^6.1.1",
+    "laravel-mix": "^6.0.49",
     "nodemon": "^3.0.1"
   }
 }

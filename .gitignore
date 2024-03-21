@@ -31,7 +31,6 @@ google-services.json
 
 # Android Profiling
 *.hprof
->>>>>>> f655186c9a1bb54dfee9a3b0061bc488fb347e07
 
 # Node
 .env
@@ -42,6 +41,10 @@ db/
 
 # Storage
 storage/
+
+# Build
+public/dist/
+public/mix-manifest.json
 
 # Others
 .DS_Store
