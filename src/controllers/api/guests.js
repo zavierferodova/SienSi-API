@@ -6,6 +6,7 @@ const responses = require('../../constants/responses')
 const { Op } = require('sequelize')
 const { guestImageStoragePath } = require('../../middlewares/upload-guest-profile-image')
 const fs = require('fs')
+const QRCode = require('qrcode')
 
 async function getRoomGuestPagination (req, res) {
   try {
@@ -322,6 +323,49 @@ function deleteRoomGuest (req, res) {
   }
 }
 
+function generateGuestQRCodeKey (req, res) {
+  try {
+    return validationResponseMaker(req, res, async () => {
+      const { roomId, guestId } = req.params
+      const { size = 500 } = req.query
+      const room = await Room.findByPk(roomId)
+
+      if (!room) {
+        return responseMaker(res, null, {
+          ...responses.notFound,
+          message: 'Room not found'
+        })
+      }
+
+      const guest = await Guest.findByPk(guestId)
+
+      if (!guest) {
+        return responseMaker(res, null, {
+          ...responses.notFound,
+          message: 'Guest not found'
+        })
+      }
+
+      const qrCode = await QRCode.toBuffer(guest.key, {
+        errorCorrectionLevel: 'H',
+        width: size,
+        margin: 2
+      })
+
+      res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Length': qrCode.length
+      })
+      res.end(qrCode)
+    })
+  } catch (error) {
+    return responseMaker(res, null, {
+      ...responses.error,
+      message: error.message
+    })
+  }
+}
+
 function getGuestImageFile (req, res) {
   try {
     const { filename } = req.params
@@ -374,6 +418,7 @@ module.exports = {
   addRoomGuest,
   updateRoomGuest,
   deleteRoomGuest,
+  generateGuestQRCodeKey,
   getGuestImageFile,
   uploadGuestProfileImage
 }
