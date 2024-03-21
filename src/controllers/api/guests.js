@@ -3,12 +3,13 @@ const Room = require('../../models').room
 const validationResponseMaker = require('../../utils/validation-response-maker')
 const responseMaker = require('../../utils/response-maker')
 const responses = require('../../constants/responses')
+const { Op } = require('sequelize')
 const { guestImageStoragePath } = require('../../middlewares/upload-guest-profile-image')
 const fs = require('fs')
 
 async function getRoomGuestPagination (req, res) {
   try {
-    const { page, limit } = req.query
+    const { page, limit, search = '' } = req.query
     const currentPage = page ? parseInt(page) : 1
     const currentLimit = limit ? parseInt(limit) : 10
     const offset = (currentPage - 1) * currentLimit
@@ -25,7 +26,45 @@ async function getRoomGuestPagination (req, res) {
 
     const totalGuests = await Guest.count({
       where: {
-        roomId
+        [Op.and]: [
+          {
+            roomId
+          },
+          {
+            [Op.or]: [
+              {
+                key: {
+                  [Op.like]: `%${search}%`
+                }
+              },
+              {
+                name: {
+                  [Op.like]: `%${search}%`
+                }
+              },
+              {
+                gender: {
+                  [Op.like]: `%${search}%`
+                }
+              },
+              {
+                address: {
+                  [Op.like]: `%${search}%`
+                }
+              },
+              {
+                email: {
+                  [Op.like]: `%${search}%`
+                }
+              },
+              {
+                phone: {
+                  [Op.like]: `%${search}%`
+                }
+              }
+            ]
+          }
+        ]
       }
     })
 
@@ -33,7 +72,45 @@ async function getRoomGuestPagination (req, res) {
       limit: currentLimit,
       offset,
       where: {
-        roomId
+        [Op.and]: [
+          {
+            roomId
+          },
+          {
+            [Op.or]: [
+              {
+                key: {
+                  [Op.like]: `%${search}%`
+                }
+              },
+              {
+                name: {
+                  [Op.like]: `%${search}%`
+                }
+              },
+              {
+                gender: {
+                  [Op.like]: `%${search}%`
+                }
+              },
+              {
+                address: {
+                  [Op.like]: `%${search}%`
+                }
+              },
+              {
+                email: {
+                  [Op.like]: `%${search}%`
+                }
+              },
+              {
+                phone: {
+                  [Op.like]: `%${search}%`
+                }
+              }
+            ]
+          }
+        ]
       }
     })
 

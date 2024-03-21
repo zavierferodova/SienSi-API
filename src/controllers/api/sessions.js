@@ -10,7 +10,7 @@ const { Op } = require('sequelize')
 async function getRoomSessionPagination (req, res) {
   try {
     const { roomId } = req.params
-    const { page, limit } = req.query
+    const { page, limit, search = '' } = req.query
     const currentPage = page ? parseInt(page) : 1
     const currentLimit = limit ? parseInt(limit) : 10
     const offset = (currentPage - 1) * currentLimit
@@ -25,16 +25,34 @@ async function getRoomSessionPagination (req, res) {
 
     const totalSessions = await Session.count({
       where: {
-        roomId
+        [Op.and]: [
+          {
+            roomId
+          },
+          {
+            name: {
+              [Op.like]: `%${search}%`
+            }
+          }
+        ]
       }
     })
 
     const sessions = await Session.findAll({
-      where: {
-        roomId
-      },
       limit: currentLimit,
-      offset
+      offset,
+      where: {
+        [Op.and]: [
+          {
+            roomId
+          },
+          {
+            name: {
+              [Op.like]: `%${search}%`
+            }
+          }
+        ]
+      }
     })
 
     const totalPages = Math.ceil(parseInt(totalSessions) / parseInt(currentLimit))

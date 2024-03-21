@@ -2,16 +2,46 @@ const Room = require('../../models').room
 const responses = require('../../constants/responses')
 const validationResponseMaker = require('../../utils/validation-response-maker')
 const responseMaker = require('../../utils/response-maker')
+const { Op } = require('sequelize')
 
 async function getRoomPagination (req, res) {
   try {
-    const { page, limit } = req.query
+    const { page, limit, search = '' } = req.query
     const currentPage = page ? parseInt(page) : 1
     const currentLimit = limit ? parseInt(limit) : 10
     const offset = (currentPage - 1) * currentLimit
 
-    const totalRooms = await Room.count()
+    const totalRooms = await Room.count({
+      where: {
+        [Op.or]: [
+          {
+            name: {
+              [Op.like]: `%${search}%`
+            }
+          },
+          {
+            description: {
+              [Op.like]: `%${search}%`
+            }
+          }
+        ]
+      }
+    })
     const rooms = await Room.findAll({
+      where: {
+        [Op.or]: [
+          {
+            name: {
+              [Op.like]: `%${search}%`
+            }
+          },
+          {
+            description: {
+              [Op.like]: `%${search}%`
+            }
+          }
+        ]
+      },
       limit: currentLimit,
       offset
     })
