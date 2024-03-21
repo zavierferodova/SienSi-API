@@ -3,6 +3,8 @@ const Room = require('../../models').room
 const validationResponseMaker = require('../../utils/validation-response-maker')
 const responseMaker = require('../../utils/response-maker')
 const responses = require('../../constants/responses')
+const { guestImageStoragePath } = require('../../middlewares/upload-guest-profile-image')
+const fs = require('fs')
 
 async function getRoomGuestPagination (req, res) {
   try {
@@ -243,10 +245,58 @@ function deleteRoomGuest (req, res) {
   }
 }
 
+function getGuestImageFile (req, res) {
+  try {
+    const { filename } = req.params
+    const filePath = `${guestImageStoragePath}/${filename}`
+
+    if (!fs.existsSync(filePath)) {
+      return responseMaker(res, null, {
+        ...responses.notFound,
+        message: 'File not found'
+      })
+    }
+
+    return res.sendFile(filePath)
+  } catch (error) {
+    return responseMaker(res, null, {
+      ...responses.error,
+      message: error.message
+    })
+  }
+}
+
+function uploadGuestProfileImage (req, res) {
+  try {
+    if (!req.file) {
+      return responseMaker(res, null, {
+        ...responses.badRequest,
+        message: 'No file uploaded'
+      })
+    }
+
+    const data = {
+      filename: req.file.filename
+    }
+
+    return responseMaker(res, data, {
+      ...responses.success,
+      message: 'Image uploaded'
+    })
+  } catch (error) {
+    return responseMaker(res, null, {
+      ...responses.error,
+      message: error.message
+    })
+  }
+}
+
 module.exports = {
   getRoomGuest,
   getRoomGuestPagination,
   addRoomGuest,
   updateRoomGuest,
-  deleteRoomGuest
+  deleteRoomGuest,
+  getGuestImageFile,
+  uploadGuestProfileImage
 }

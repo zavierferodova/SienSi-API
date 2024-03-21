@@ -43,6 +43,7 @@ const {
 } = require('../controllers/api/sessions.js')
 
 const router = Router()
+
 router.get('/', (req, res) => {
   res.json({
     message: 'Welcome to the SienSi API'

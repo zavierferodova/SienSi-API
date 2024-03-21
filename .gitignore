@@ -40,5 +40,8 @@ node_modules/
 # Database
 db/
 
+# Storage
+storage/
+
 # Others
 .DS_Store
