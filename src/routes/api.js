@@ -68,7 +68,7 @@ router.get('/room/:roomId/guest', [verifyJwtToken], getRoomGuestPagination)
 router.post('/room/:roomId/guest', [verifyJwtToken, ...createRoomGuestValidator], addRoomGuest)
 router.put('/room/:roomId/guest/:guestId', [verifyJwtToken, ...updateRoomGuestValidator], updateRoomGuest)
 router.delete('/room/:roomId/guest/:guestId', [verifyJwtToken], deleteRoomGuest)
-router.get('/room/:roomId/guest/:guestId/generate-qrkey', [verifyJwtToken], generateGuestQRCodeKey)
+router.get('/room/:roomId/guest/:guestId/qrkey', [verifyJwtToken], generateGuestQRCodeKey)
 
 router.get('/room/:roomId/session/:sessionId', [verifyJwtToken], getRoomSession)
 router.get('/room/:roomId/session', [verifyJwtToken], getRoomSessionPagination)

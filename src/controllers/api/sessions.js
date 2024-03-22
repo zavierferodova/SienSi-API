@@ -327,6 +327,13 @@ function guestPresence (req, res) {
         })
       }
 
+      if (!session.allowPresence) {
+        return responseMaker(res, null, {
+          ...responses.badRequest,
+          message: 'Presence recording is not allowed for this session'
+        })
+      }
+
       const guest = await Guest.findOne({
         [Op.and]: {
           roomId,
@@ -338,6 +345,22 @@ function guestPresence (req, res) {
         return responseMaker(res, null, {
           ...responses.notFound,
           message: 'Guest not found'
+        })
+      }
+
+      const attendanceExists = await Attendance.findOne({
+        where: {
+          [Op.and]: {
+            sessionId,
+            guestId: guest.id
+          }
+        }
+      })
+
+      if (attendanceExists) {
+        return responseMaker(res, null, {
+          ...responses.badRequest,
+          message: 'Guest presence already recorded'
         })
       }
 
