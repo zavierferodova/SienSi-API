@@ -1026,6 +1026,58 @@
 					"response": []
 				},
 				{
+					"name": "Download Excel Attendances",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Access-Token",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/room/{{roomId}}/session/{{sessionId}}/excel",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"room",
+								"{{roomId}}",
+								"session",
+								"{{sessionId}}",
+								"excel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Delete Session",
 					"event": [
 						{

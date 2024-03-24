@@ -40,7 +40,8 @@ const {
   updateRoomSession,
   deleteRoomSession,
   getGuestPresencePagination,
-  guestPresence
+  guestPresence,
+  generateExcelSessionAttendances
 } = require('../controllers/api/sessions.js')
 
 const router = Router()
@@ -77,5 +78,6 @@ router.put('/room/:roomId/session/:sessionId', [verifyJwtToken, ...updateRoomSes
 router.delete('/room/:roomId/session/:sessionId', [verifyJwtToken], deleteRoomSession)
 router.get('/room/:roomId/session/:sessionId/presence', [verifyJwtToken], getGuestPresencePagination)
 router.post('/room/:roomId/session/:sessionId/presence', [verifyJwtToken], guestPresence)
+router.get('/room/:roomId/session/:sessionId/excel', [verifyJwtToken], generateExcelSessionAttendances)
 
 module.exports = router

@@ -6,6 +6,7 @@ const validationResponseMaker = require('../../utils/validation-response-maker')
 const responseMaker = require('../../utils/response-maker')
 const responses = require('../../constants/responses')
 const { Op } = require('sequelize')
+const writeXlsxFile = require('write-excel-file')
 
 async function getRoomSessionPagination (req, res) {
   try {
@@ -387,6 +388,129 @@ function guestPresence (req, res) {
   }
 }
 
+async function generateExcelSessionAttendances (req, res) {
+  try {
+    const { roomId, sessionId } = req.params
+
+    const room = await Room.findByPk(roomId)
+
+    if (!room) {
+      return responseMaker(res, null, {
+        ...responses.notFound,
+        message: 'Room not found'
+      })
+    }
+
+    const session = await Session.findByPk(sessionId)
+
+    if (!session) {
+      return responseMaker(res, null, {
+        ...responses.notFound,
+        message: 'Session not found'
+      })
+    }
+
+    const guests = await Guest.findAll({
+      where: {
+        roomId
+      },
+      include: [
+        {
+          model: Room
+        },
+        {
+          model: Attendance,
+          required: false,
+          where: {
+            sessionId
+          }
+        }
+      ]
+    })
+
+    const objects = guests.map((guest, index) => {
+      return {
+        number: `${Number(index) + 1}`,
+        key: guest.key,
+        name: guest.name,
+        gender: guest.gender,
+        address: guest.address || '-',
+        email: guest.email || '-',
+        phone: guest.phone || '-',
+        timePresence: guest.attendances.length > 0 ? guest.attendances[0].createdAt : ''
+      }
+    })
+
+    const schema = [
+      {
+        column: 'No',
+        type: String,
+        value: guest => guest.number,
+        width: 3
+      },
+      {
+        column: 'Key',
+        type: String,
+        value: guest => guest.key,
+        width: 10
+      },
+      {
+        column: 'Name',
+        type: String,
+        value: guest => guest.name,
+        width: 15
+      },
+      {
+        column: 'Gender',
+        type: String,
+        value: guest => guest.gender,
+        width: 10
+      },
+      {
+        column: 'Address',
+        type: String,
+        value: guest => guest.address,
+        width: 15
+      },
+      {
+        column: 'Email',
+        type: String,
+        value: guest => guest.email,
+        width: 15
+      },
+      {
+        column: 'Phone',
+        type: String,
+        value: guest => guest.phone,
+        width: 15
+      },
+      {
+        column: 'Time Presence',
+        type: Date,
+        format: 'dd/mm/yyyy hh:mm:ss AM/PM',
+        value: guest => guest.timePresence,
+        width: 25
+      }
+    ]
+
+    const blob = await writeXlsxFile(objects, {
+      schema,
+      buffer: true
+    })
+
+    const buffer = Buffer.from(await blob.arrayBuffer())
+    res.set('Content-Type', blob.type)
+    res.set('Content-Length', blob.size)
+    res.set('Content-Disposition', `attachment; filename="${session.name} - ${room.name}.xlsx"`)
+    res.send(buffer)
+  } catch (error) {
+    return responseMaker(res, null, {
+      ...responses.error,
+      message: error.message
+    })
+  }
+}
+
 module.exports = {
   getRoomSession,
   getRoomSessionPagination,
@@ -394,5 +518,6 @@ module.exports = {
   updateRoomSession,
   deleteRoomSession,
   getGuestPresencePagination,
-  guestPresence
+  guestPresence,
+  generateExcelSessionAttendances
 }
