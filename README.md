@@ -1,4 +1,4 @@
-# SienSi
+# SienSi-API
 Sistem Informasi Presensi, website rekapitulasi tamu undangan dengan scan Kode QR.
 
 ## Setup
@@ -26,23 +26,6 @@ Sistem Informasi Presensi, website rekapitulasi tamu undangan dengan scan Kode Q
    ```
 
 ## Development
-### Project Structure
-Tree top directory structure :
-```
-.
-├── public
-├── resources
-│   ├── css
-│   ├── js
-│   └── views
-└── src
-```
-
-Penjelasan :
-1. Folder `public` digunakan untuk menyimpan aset web yang dapat diakses pengguna secara terbuka
-2. Folder `resources` merupakan tempat kode Front - End Web
-3. Folder `src` merupakan tempat kode Server Express JS
-
 ### Menjalankan Development Server
 ```sh
 npm run dev
@@ -56,4 +39,3 @@ npm run start
 ## Libraries
 1. [ExpressJS](https://expressjs.com/)
 2. [Sequelize ORM](https://sequelize.org/)
-
