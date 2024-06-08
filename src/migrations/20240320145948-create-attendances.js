@@ -9,15 +9,6 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
-      sessionId: {
-        type: Sequelize.UUID,
-        allowNull: false,
-        onDelete: 'CASCADE',
-        references: {
-          model: 'sessions',
-          key: 'id'
-        }
-      },
       guestId: {
         type: Sequelize.UUID,
         allowNull: false,

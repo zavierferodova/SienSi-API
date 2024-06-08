@@ -9,15 +9,6 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
-      roomId: {
-        type: Sequelize.UUID,
-        allowNull: false,
-        onDelete: 'CASCADE',
-        references: {
-          model: 'rooms',
-          key: 'id'
-        }
-      },
       key: {
         type: Sequelize.STRING(30),
         allowNull: false

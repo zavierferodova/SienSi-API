@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f33342fb-3279-45c0-b83b-b81530d36b3a",
+		"_postman_id": "1e867261-5f6d-43a4-a183-7e0fb2a878d9",
 		"name": "SienSi API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "13016098"
@@ -143,8 +143,7 @@
 						"header": [
 							{
 								"key": "X-Refresh-Token",
-								"value": "{{refreshToken}}",
-								"type": "text"
+								"value": "{{refreshToken}}"
 							}
 						],
 						"url": {
@@ -173,8 +172,7 @@
 						"header": [
 							{
 								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
+								"value": "{{accessToken}}"
 							}
 						],
 						"url": {
@@ -186,230 +184,6 @@
 								"api",
 								"user",
 								"{{userId}}"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Room",
-			"item": [
-				{
-					"name": "Add Room",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const responseJson = pm.response.json()",
-									"",
-									"if (responseJson.data) {",
-									"    const { data } = responseJson",
-									"    if (data.room) {",
-									"        const { room } = data",
-									"        pm.environment.set('roomId', room.id)",
-									"    }",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"Ruang 1\",\n    \"description\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus posuere augue ut erat sollicitudin porttitor. Vestibulum ac lectus fringilla, bibendum erat eget, efficitur mauris. In convallis a ex non luctus. Fusce pharetra tortor at est mattis, a scelerisque lacus tempus. Pellentesque vitae lobortis nisi, sagittis rhoncus justo. Duis eget ante tincidunt, suscipit odio non, pretium lacus.\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/room",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"room"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Room",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"room",
-								"{{roomId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Room Pagination",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{host}}/api/room?page=1&search=",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"room"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "search",
-									"value": ""
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Room",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const responseJson = pm.response.json()",
-									"",
-									"if (responseJson.data) {",
-									"    const { data } = responseJson",
-									"    if (data.room) {",
-									"        const { room } = data",
-									"        pm.environment.set('roomId', room.id)",
-									"    }",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"Ruang 1 Updated\",\n    \"description\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus posuere augue ut erat sollicitudin porttitor. Vestibulum ac lectus fringilla, bibendum erat eget, efficitur mauris. In convallis a ex non luctus.\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"room",
-								"{{roomId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Room",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const responseJson = pm.response.json()",
-									"",
-									"if (responseJson.data) {",
-									"    const { data } = responseJson",
-									"    if (data.room) {",
-									"        const { room } = data",
-									"        pm.environment.set('roomId', room.id)",
-									"    }",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"room",
-								"{{roomId}}"
 							]
 						}
 					},
@@ -447,8 +221,7 @@
 						"header": [
 							{
 								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
+								"value": "{{accessToken}}"
 							}
 						],
 						"body": {
@@ -461,14 +234,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}/guest",
+							"raw": "{{host}}/api/guest",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"room",
-								"{{roomId}}",
 								"guest"
 							]
 						}
@@ -497,8 +268,7 @@
 						"header": [
 							{
 								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
+								"value": "{{accessToken}}"
 							}
 						],
 						"body": {
@@ -511,14 +281,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}/guest/{{guestId}}",
+							"raw": "{{host}}/api/guest/{{guestId}}",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"room",
-								"{{roomId}}",
 								"guest",
 								"{{guestId}}"
 							]
@@ -536,8 +304,7 @@
 						"header": [
 							{
 								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
+								"value": "{{accessToken}}"
 							}
 						],
 						"body": {
@@ -550,14 +317,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}/guest?page=1?search=",
+							"raw": "{{host}}/api/guest?page=1?search=",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"room",
-								"{{roomId}}",
 								"guest"
 							],
 							"query": [
@@ -592,8 +357,7 @@
 						"header": [
 							{
 								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
+								"value": "{{accessToken}}"
 							}
 						],
 						"body": {
@@ -606,14 +370,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}/guest/{{guestId}}/qrkey?size=200",
+							"raw": "{{host}}/api/guest/{{guestId}}/qrkey?size=200",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"room",
-								"{{roomId}}",
 								"guest",
 								"{{guestId}}",
 								"qrkey"
@@ -647,8 +409,7 @@
 						"header": [
 							{
 								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
+								"value": "{{accessToken}}"
 							}
 						],
 						"body": {
@@ -661,14 +422,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}/guest/{{guestId}}",
+							"raw": "{{host}}/api/guest/{{guestId}}",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"room",
-								"{{roomId}}",
 								"guest",
 								"{{guestId}}"
 							]
@@ -695,8 +454,7 @@
 						"header": [
 							{
 								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
+								"value": "{{accessToken}}"
 							}
 						],
 						"body": {
@@ -709,14 +467,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}/guest/{{guestId}}",
+							"raw": "{{host}}/api/guest/{{guestId}}",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"room",
-								"{{roomId}}",
 								"guest",
 								"{{guestId}}"
 							]
@@ -727,65 +483,10 @@
 			]
 		},
 		{
-			"name": "Session",
+			"name": "Presence",
 			"item": [
 				{
-					"name": "Add Session",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const responseJson = pm.response.json()",
-									"",
-									"if (responseJson.data) {",
-									"    const { data } = responseJson",
-									"    if (data.session) {",
-									"        const { session } = data",
-									"        pm.environment.set('sessionId', session.id)",
-									"    }",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"Session 1\",\n    \"allowPresence\": true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}/session",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"room",
-								"{{roomId}}",
-								"session"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Session",
+					"name": "Guest Presence",
 					"event": [
 						{
 							"listen": "test",
@@ -798,154 +499,12 @@
 							}
 						}
 					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}/session/{{sessionId}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"room",
-								"{{roomId}}",
-								"session",
-								"{{sessionId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Session Pagination",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}/session?search=",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"room",
-								"{{roomId}}",
-								"session"
-							],
-							"query": [
-								{
-									"key": "search",
-									"value": ""
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Session",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"Session 1 Updated\",\n    \"allowPresence\": false\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}/session/{{sessionId}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"room",
-								"{{roomId}}",
-								"session",
-								"{{sessionId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Session Guest Presence",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
 					"request": {
 						"method": "POST",
 						"header": [
 							{
 								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
+								"value": "{{accessToken}}"
 							}
 						],
 						"body": {
@@ -958,16 +517,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}/session/{{sessionId}}/presence",
+							"raw": "{{host}}/api/presence",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"room",
-								"{{roomId}}",
-								"session",
-								"{{sessionId}}",
 								"presence"
 							]
 						}
@@ -983,7 +538,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -995,8 +551,7 @@
 						"header": [
 							{
 								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
+								"value": "{{accessToken}}"
 							}
 						],
 						"body": {
@@ -1009,16 +564,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}/session/{{sessionId}}/presence",
+							"raw": "{{host}}/api/presence",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"room",
-								"{{roomId}}",
-								"session",
-								"{{sessionId}}",
 								"presence"
 							]
 						}
@@ -1047,8 +598,7 @@
 						"header": [
 							{
 								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
+								"value": "{{accessToken}}"
 							}
 						],
 						"body": {
@@ -1061,24 +611,21 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}/session/{{sessionId}}/excel",
+							"raw": "{{host}}/api/presence/export-excel",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"room",
-								"{{roomId}}",
-								"session",
-								"{{sessionId}}",
-								"excel"
+								"presence",
+								"export-excel"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Delete Session",
+					"name": "Clear Attendances",
 					"event": [
 						{
 							"listen": "test",
@@ -1086,7 +633,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -1095,13 +643,12 @@
 						"header": [
 							{
 								"key": "X-Access-Token",
-								"value": "{{accessToken}}",
-								"type": "text"
+								"value": "{{accessToken}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"key\": 123,\n    \"name\": \"Tamu 1 updated\",\n    \"gender\": \"male\"\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1109,16 +656,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}/session/{{sessionId}}",
+							"raw": "{{host}}/api/presence",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"room",
-								"{{roomId}}",
-								"session",
-								"{{sessionId}}"
+								"presence"
 							]
 						}
 					},
@@ -1156,8 +700,7 @@
 						"header": [
 							{
 								"key": "X-ACCESS-TOKEN",
-								"value": "{{accessToken}}",
-								"type": "text"
+								"value": "{{accessToken}}"
 							}
 						],
 						"body": {

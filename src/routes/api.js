@@ -3,46 +3,27 @@ const verifyJwtToken = require('../middlewares/verify-jwt-token.js')
 const { getUser } = require('../controllers/api/users.js')
 const { loginValidator } = require('../validator/auth-validator.js')
 const {
-  createRoomValidator,
-  updateRoomValidator
-} = require('../validator/room-validator.js')
-const {
-  createRoomGuestValidator,
-  updateRoomGuestValidator
+  createGuestValidator,
+  updateGuestValidator
 } = require('../validator/guest-validator.js')
-const {
-  createRoomSessionValidator,
-  updateRoomSessionValidator
-} = require('../validator/session-validator.js')
 const {
   login,
   updateAccessToken
 } = require('../controllers/api/auth.js')
 const {
-  getRoom,
-  getRoomPagination,
-  addRoom,
-  updateRoom,
-  deleteRoom
-} = require('../controllers/api/rooms.js')
-const {
-  getRoomGuest,
-  getRoomGuestPagination,
-  addRoomGuest,
-  updateRoomGuest,
-  deleteRoomGuest,
+  getGuest,
+  getGuestPagination,
+  addGuest,
+  updateGuest,
+  deleteGuest,
   generateGuestQRCodeKey
 } = require('../controllers/api/guests.js')
 const {
-  getRoomSession,
-  getRoomSessionPagination,
-  addRoomSession,
-  updateRoomSession,
-  deleteRoomSession,
   getGuestPresencePagination,
   guestPresence,
-  generateExcelSessionAttendances
-} = require('../controllers/api/sessions.js')
+  clearAttendances,
+  generateExcelAttendances
+} = require('../controllers/api/presence.js')
 
 const router = Router()
 
@@ -58,26 +39,16 @@ router.post('/token/update', updateAccessToken)
 
 router.get('/user/:id', [verifyJwtToken], getUser)
 
-router.get('/room/:id', [verifyJwtToken], getRoom)
-router.get('/room', [verifyJwtToken], getRoomPagination)
-router.post('/room', [verifyJwtToken, ...createRoomValidator], addRoom)
-router.put('/room/:id', [verifyJwtToken, ...updateRoomValidator], updateRoom)
-router.delete('/room/:id', [verifyJwtToken], deleteRoom)
+router.get('/guest/:guestId', [verifyJwtToken], getGuest)
+router.get('/guest', [verifyJwtToken], getGuestPagination)
+router.post('/guest', [verifyJwtToken, ...createGuestValidator], addGuest)
+router.put('/guest/:guestId', [verifyJwtToken, ...updateGuestValidator], updateGuest)
+router.delete('/guest/:guestId', [verifyJwtToken], deleteGuest)
+router.get('/guest/:guestId/qrkey', [verifyJwtToken], generateGuestQRCodeKey)
 
-router.get('/room/:roomId/guest/:guestId', [verifyJwtToken], getRoomGuest)
-router.get('/room/:roomId/guest', [verifyJwtToken], getRoomGuestPagination)
-router.post('/room/:roomId/guest', [verifyJwtToken, ...createRoomGuestValidator], addRoomGuest)
-router.put('/room/:roomId/guest/:guestId', [verifyJwtToken, ...updateRoomGuestValidator], updateRoomGuest)
-router.delete('/room/:roomId/guest/:guestId', [verifyJwtToken], deleteRoomGuest)
-router.get('/room/:roomId/guest/:guestId/qrkey', [verifyJwtToken], generateGuestQRCodeKey)
-
-router.get('/room/:roomId/session/:sessionId', [verifyJwtToken], getRoomSession)
-router.get('/room/:roomId/session', [verifyJwtToken], getRoomSessionPagination)
-router.post('/room/:roomId/session', [verifyJwtToken, ...createRoomSessionValidator], addRoomSession)
-router.put('/room/:roomId/session/:sessionId', [verifyJwtToken, ...updateRoomSessionValidator], updateRoomSession)
-router.delete('/room/:roomId/session/:sessionId', [verifyJwtToken], deleteRoomSession)
-router.get('/room/:roomId/session/:sessionId/presence', [verifyJwtToken], getGuestPresencePagination)
-router.post('/room/:roomId/session/:sessionId/presence', [verifyJwtToken], guestPresence)
-router.get('/room/:roomId/session/:sessionId/excel', [verifyJwtToken], generateExcelSessionAttendances)
+router.get('/presence', [verifyJwtToken], getGuestPresencePagination)
+router.post('/presence', [verifyJwtToken], guestPresence)
+router.delete('/presence', [verifyJwtToken], clearAttendances)
+router.get('/presence/export-excel', [verifyJwtToken], generateExcelAttendances)
 
 module.exports = router

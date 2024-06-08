@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       // define association here
-      attendance.belongsTo(models.session)
       attendance.belongsTo(models.guest)
     }
   }
@@ -21,11 +20,6 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
-    },
-    sessionId: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      onDelete: 'CASCADE'
     },
     guestId: {
       type: DataTypes.UUID,

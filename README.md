@@ -4,7 +4,8 @@ Sistem Informasi Presensi, website rekapitulasi tamu undangan dengan scan Kode Q
 ## Setup
 1. Install Node Depedencies
    ```sh
-   npm install --legacy-peer-deps
+   npm install
+   ```
 2. Copy `.env.example` dan rename menjadi `.env`
    ```sh
    cp .env.example .env
@@ -43,26 +44,16 @@ Penjelasan :
 3. Folder `src` merupakan tempat kode Server Express JS
 
 ### Menjalankan Development Server
-- Express JS Development Server
-  ```sh
-  npm run dev
-  ```
-- Laravel Mix Front - End development server
-  ```sh
-  npm run mix-watch
-  ```
+```sh
+npm run dev
+```
 
 ## Production
-1. Bundling aset Front - End
-   ```sh
-   npm run mix-prod
-   ```
-2. Jalankan Express Server
-   ```sh
-   npm run start
-   ```
+```sh
+npm run start
+```
+
 ## Libraries
 1. [ExpressJS](https://expressjs.com/)
 2. [Sequelize ORM](https://sequelize.org/)
-3. [Laravel Mix](https://laravel-mix.com/)
 

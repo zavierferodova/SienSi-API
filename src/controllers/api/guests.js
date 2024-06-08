@@ -1,5 +1,4 @@
 const Guest = require('../../models').guest
-const Room = require('../../models').room
 const validationResponseMaker = require('../../utils/validation-response-maker')
 const responseMaker = require('../../utils/response-maker')
 const responses = require('../../constants/responses')
@@ -8,62 +7,45 @@ const { guestImageStoragePath } = require('../../middlewares/upload-guest-profil
 const fs = require('fs')
 const QRCode = require('qrcode')
 
-async function getRoomGuestPagination (req, res) {
+async function getGuestPagination (req, res) {
   try {
     const { page, limit, search = '' } = req.query
     const currentPage = page ? parseInt(page) : 1
     const currentLimit = limit ? parseInt(limit) : 10
     const offset = (currentPage - 1) * currentLimit
 
-    const { roomId } = req.params
-    const room = await Room.findByPk(roomId)
-
-    if (!room) {
-      return responseMaker(res, null, {
-        ...responses.notFound,
-        message: 'Room not found'
-      })
-    }
-
     const totalGuests = await Guest.count({
       where: {
-        [Op.and]: [
+        [Op.or]: [
           {
-            roomId
+            key: {
+              [Op.like]: `%${search}%`
+            }
           },
           {
-            [Op.or]: [
-              {
-                key: {
-                  [Op.like]: `%${search}%`
-                }
-              },
-              {
-                name: {
-                  [Op.like]: `%${search}%`
-                }
-              },
-              {
-                gender: {
-                  [Op.like]: `%${search}%`
-                }
-              },
-              {
-                address: {
-                  [Op.like]: `%${search}%`
-                }
-              },
-              {
-                email: {
-                  [Op.like]: `%${search}%`
-                }
-              },
-              {
-                phone: {
-                  [Op.like]: `%${search}%`
-                }
-              }
-            ]
+            name: {
+              [Op.like]: `%${search}%`
+            }
+          },
+          {
+            gender: {
+              [Op.like]: `%${search}%`
+            }
+          },
+          {
+            address: {
+              [Op.like]: `%${search}%`
+            }
+          },
+          {
+            email: {
+              [Op.like]: `%${search}%`
+            }
+          },
+          {
+            phone: {
+              [Op.like]: `%${search}%`
+            }
           }
         ]
       }
@@ -73,46 +55,42 @@ async function getRoomGuestPagination (req, res) {
       limit: currentLimit,
       offset,
       where: {
-        [Op.and]: [
+        [Op.or]: [
           {
-            roomId
+            key: {
+              [Op.like]: `%${search}%`
+            }
           },
           {
-            [Op.or]: [
-              {
-                key: {
-                  [Op.like]: `%${search}%`
-                }
-              },
-              {
-                name: {
-                  [Op.like]: `%${search}%`
-                }
-              },
-              {
-                gender: {
-                  [Op.like]: `%${search}%`
-                }
-              },
-              {
-                address: {
-                  [Op.like]: `%${search}%`
-                }
-              },
-              {
-                email: {
-                  [Op.like]: `%${search}%`
-                }
-              },
-              {
-                phone: {
-                  [Op.like]: `%${search}%`
-                }
-              }
-            ]
+            name: {
+              [Op.like]: `%${search}%`
+            }
+          },
+          {
+            gender: {
+              [Op.like]: `%${search}%`
+            }
+          },
+          {
+            address: {
+              [Op.like]: `%${search}%`
+            }
+          },
+          {
+            email: {
+              [Op.like]: `%${search}%`
+            }
+          },
+          {
+            phone: {
+              [Op.like]: `%${search}%`
+            }
           }
         ]
-      }
+      },
+      order: [
+        ['updatedAt', 'DESC']
+      ]
     })
 
     const totalPages = Math.ceil(parseInt(totalGuests) / parseInt(currentLimit))
@@ -127,7 +105,7 @@ async function getRoomGuestPagination (req, res) {
 
     return responseMaker(res, data, {
       ...responses.success,
-      message: 'Guests found'
+      message: 'Guests retrieved successfully'
     })
   } catch (error) {
     return responseMaker(res, null, {
@@ -137,18 +115,9 @@ async function getRoomGuestPagination (req, res) {
   }
 }
 
-async function getRoomGuest (req, res) {
+async function getGuest (req, res) {
   try {
-    const { roomId, guestId } = req.params
-    const room = await Room.findByPk(roomId)
-
-    if (!room) {
-      return responseMaker(res, null, {
-        ...responses.notFound,
-        message: 'Room not found'
-      })
-    }
-
+    const { guestId } = req.params
     const guest = await Guest.findByPk(guestId)
 
     if (!guest) {
@@ -174,10 +143,9 @@ async function getRoomGuest (req, res) {
   }
 }
 
-function addRoomGuest (req, res) {
+function addGuest (req, res) {
   try {
     return validationResponseMaker(req, res, async () => {
-      const { roomId } = req.params
       const {
         key,
         photo = null,
@@ -187,17 +155,8 @@ function addRoomGuest (req, res) {
         email = null,
         phone = null
       } = req.body
-      const room = await Room.findByPk(roomId)
-
-      if (!room) {
-        return responseMaker(res, null, {
-          ...responses.notFound,
-          message: 'Room not found'
-        })
-      }
 
       const guest = await Guest.create({
-        roomId,
         key,
         photo,
         name,
@@ -224,10 +183,10 @@ function addRoomGuest (req, res) {
   }
 }
 
-function updateRoomGuest (req, res) {
+function updateGuest (req, res) {
   try {
     return validationResponseMaker(req, res, async () => {
-      const { roomId, guestId } = req.params
+      const { guestId } = req.params
       const {
         key,
         photo,
@@ -237,14 +196,6 @@ function updateRoomGuest (req, res) {
         email,
         phone
       } = req.body
-      const room = await Room.findByPk(roomId)
-
-      if (!room) {
-        return responseMaker(res, null, {
-          ...responses.notFound,
-          message: 'Room not found'
-        })
-      }
 
       const guest = await Guest.findByPk(guestId)
 
@@ -282,18 +233,10 @@ function updateRoomGuest (req, res) {
   }
 }
 
-function deleteRoomGuest (req, res) {
+function deleteGuest (req, res) {
   try {
     return validationResponseMaker(req, res, async () => {
-      const { roomId, guestId } = req.params
-      const room = await Room.findByPk(roomId)
-
-      if (!room) {
-        return responseMaker(res, null, {
-          ...responses.notFound,
-          message: 'Room not found'
-        })
-      }
+      const { guestId } = req.params
 
       const guest = await Guest.findByPk(guestId)
 
@@ -326,16 +269,8 @@ function deleteRoomGuest (req, res) {
 function generateGuestQRCodeKey (req, res) {
   try {
     return validationResponseMaker(req, res, async () => {
-      const { roomId, guestId } = req.params
+      const { guestId } = req.params
       const { size = 500 } = req.query
-      const room = await Room.findByPk(roomId)
-
-      if (!room) {
-        return responseMaker(res, null, {
-          ...responses.notFound,
-          message: 'Room not found'
-        })
-      }
 
       const guest = await Guest.findByPk(guestId)
 
@@ -413,11 +348,11 @@ function uploadGuestProfileImage (req, res) {
 }
 
 module.exports = {
-  getRoomGuest,
-  getRoomGuestPagination,
-  addRoomGuest,
-  updateRoomGuest,
-  deleteRoomGuest,
+  getGuest,
+  getGuestPagination,
+  addGuest,
+  updateGuest,
+  deleteGuest,
   generateGuestQRCodeKey,
   getGuestImageFile,
   uploadGuestProfileImage

@@ -19,6 +19,10 @@ const responses = {
     message: 'Not found',
     code: 404
   },
+  conflict: {
+    message: 'Conflict',
+    code: 409
+  },
   error: {
     message: 'Error',
     code: 500
