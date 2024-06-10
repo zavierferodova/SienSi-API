@@ -37,6 +37,12 @@ npm run dev
 npm run start
 ```
 
+## Authentication
+```
+Email    : admin@mail.com
+Password : mimin
+```
+
 ## Libraries
 1. [ExpressJS](https://expressjs.com/)
 2. [Sequelize ORM](https://sequelize.org/)
