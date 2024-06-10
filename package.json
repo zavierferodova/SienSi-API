@@ -1,7 +1,7 @@
 {
-  "name": "siensi",
+  "name": "siensi-api",
   "version": "1.0.0",
-  "description": "Sistem Informasi Presensi",
+  "description": "Restful API for Siensi",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
