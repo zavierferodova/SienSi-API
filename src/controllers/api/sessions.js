@@ -242,7 +242,7 @@ function deleteRoomSession (req, res) {
 async function getGuestPresencePagination (req, res) {
   try {
     const { roomId, sessionId } = req.params
-    const { page, limit } = req.query
+    const { page, limit, search = '' } = req.query
     const currentPage = page ? parseInt(page) : 1
     const currentLimit = limit ? parseInt(limit) : 10
     const offset = (currentPage - 1) * currentLimit
@@ -267,7 +267,18 @@ async function getGuestPresencePagination (req, res) {
     const totalAttendances = await Attendance.count({
       where: {
         sessionId
-      }
+      },
+      include: [
+        {
+          required: true,
+          model: Guest,
+          where: {
+            name: {
+              [Op.like]: `%${search}%`
+            }
+          }
+        }
+      ]
     })
 
     const attendances = await Attendance.findAll({
@@ -278,7 +289,13 @@ async function getGuestPresencePagination (req, res) {
       offset,
       include: [
         {
-          model: Guest
+          required: true,
+          model: Guest,
+          where: {
+            name: {
+              [Op.like]: `%${search}%`
+            }
+          }
         }
       ]
     })
@@ -336,9 +353,11 @@ function guestPresence (req, res) {
       }
 
       const guest = await Guest.findOne({
-        [Op.and]: {
-          roomId,
-          key: guestKey
+        where: {
+          [Op.and]: {
+            roomId,
+            key: guestKey
+          }
         }
       })
 
