@@ -44,6 +44,7 @@ const {
   guestPresence,
   generateExcelSessionAttendances
 } = require('../controllers/api/sessions.js')
+const { mainInsights, topRoomWithGuests, topRoomWithAttendances } = require('../controllers/api/dashboard.js')
 
 const router = Router()
 
@@ -58,6 +59,10 @@ router.post('/auth/login', loginValidator, login)
 router.post('/token/update', updateAccessToken)
 
 router.get('/user/:id', [verifyJwtToken], getUser)
+
+router.get('/dashboard/main', [verifyJwtToken], mainInsights)
+router.get('/dashboard/top-guest-room', [verifyJwtToken], topRoomWithGuests)
+router.get('/dashboard/top-attendance-room', [verifyJwtToken], topRoomWithAttendances)
 
 router.get('/room/:id', [verifyJwtToken], getRoom)
 router.get('/room', [verifyJwtToken], getRoomPagination)
