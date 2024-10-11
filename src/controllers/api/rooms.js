@@ -1,5 +1,6 @@
 const Room = require('../../models').room
 const Guest = require('../../models').guest
+const Session = require('../../models').session
 const responses = require('../../constants/responses')
 const validationResponseMaker = require('../../utils/validation-response-maker')
 const responseMaker = require('../../utils/response-maker')
@@ -178,6 +179,16 @@ function deleteRoom (req, res) {
         })
       }
 
+      await Guest.destroy({
+        where: {
+          roomId: id
+        }
+      })
+      await Session.destroy({
+        where: {
+          roomId: id
+        }
+      })
       await room.destroy()
 
       const data = {
