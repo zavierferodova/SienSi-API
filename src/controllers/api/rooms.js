@@ -1,8 +1,14 @@
 const Room = require('../../models').room
+const Guest = require('../../models').guest
 const responses = require('../../constants/responses')
 const validationResponseMaker = require('../../utils/validation-response-maker')
 const responseMaker = require('../../utils/response-maker')
 const { Op } = require('sequelize')
+const QRCode = require('qrcode')
+const ejs = require('ejs')
+const emailQueue = require('../../queue/email-queue')
+const { ejsViewPath } = require('../../utils/ejs-util')
+const { resendVerifiedDomain } = require('../../utils/resend')
 
 async function getRoomPagination (req, res) {
   try {
@@ -27,6 +33,7 @@ async function getRoomPagination (req, res) {
         ]
       }
     })
+
     const rooms = await Room.findAll({
       where: {
         [Op.or]: [
@@ -45,6 +52,7 @@ async function getRoomPagination (req, res) {
       limit: currentLimit,
       offset
     })
+
     const totalPages = Math.ceil(parseInt(totalRooms) / parseInt(currentLimit))
 
     const data = {
@@ -189,10 +197,70 @@ function deleteRoom (req, res) {
   }
 }
 
+function sendRoomQRCodeMail (req, res) {
+  try {
+    return validationResponseMaker(req, res, async () => {
+      const { roomId } = req.params
+      const room = await Room.findByPk(roomId)
+
+      if (!room) {
+        return responseMaker(res, null, {
+          ...responses.notFound,
+          message: 'Room not found'
+        })
+      }
+
+      const guests = await Guest.findAll({
+        roomId
+      })
+
+      if (guests.length === 0) {
+        return responseMaker(res, null, {
+          ...responses.notFound,
+          message: 'Guests not found'
+        })
+      }
+
+      const mailPromises = guests.map(async (guest) => ({
+        from: `Siensi <siensi@${resendVerifiedDomain}>`,
+        to: [guest.email],
+        subject: 'Presence QR Code',
+        html: await ejs.renderFile(ejsViewPath('mail'), {
+          guestName: guest.name,
+          roomName: room.name
+        }),
+        attachments: [{
+          filename: 'qrcode.png',
+          content: (await QRCode.toBuffer(guest.key, { errorCorrectionLevel: 'H', width: 300, margin: 2 })).toString('base64')
+        }]
+      }))
+
+      const mailResults = await Promise.all(mailPromises)
+
+      mailResults.forEach(mail => {
+        emailQueue.add({
+          ...mail
+        })
+      })
+
+      return responseMaker(res, null, {
+        ...responses.success,
+        message: 'Success to send QR code to email'
+      })
+    })
+  } catch (error) {
+    return responseMaker(res, null, {
+      ...responses.error,
+      message: error.message
+    })
+  }
+}
+
 module.exports = {
   getRoomPagination,
   getRoom,
   addRoom,
+  sendRoomQRCodeMail,
   updateRoom,
   deleteRoom
 }

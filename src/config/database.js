@@ -1,7 +1,7 @@
-require('dotenv').config()
 const path = require('path')
+const { getEnv } = require('../utils/env-util')
 
-const databasePath = path.join(__dirname, `../../db/${process.env.DB_NAME}`)
+const databasePath = path.join(__dirname, `../../db/${getEnv('DB_NAME')}`)
 
 module.exports = {
   development: {

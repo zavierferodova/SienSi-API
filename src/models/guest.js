@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: false
     },
     phone: {
       type: DataTypes.STRING(20),

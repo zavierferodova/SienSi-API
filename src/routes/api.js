@@ -23,7 +23,8 @@ const {
   getRoomPagination,
   addRoom,
   updateRoom,
-  deleteRoom
+  deleteRoom,
+  sendRoomQRCodeMail
 } = require('../controllers/api/rooms.js')
 const {
   getRoomGuest,
@@ -74,6 +75,7 @@ router.get('/room/:roomId/guest/:guestId/qrkey', [verifyJwtToken], generateGuest
 router.get('/room/:roomId/session/:sessionId', [verifyJwtToken], getRoomSession)
 router.get('/room/:roomId/session', [verifyJwtToken], getRoomSessionPagination)
 router.post('/room/:roomId/session', [verifyJwtToken, ...createRoomSessionValidator], addRoomSession)
+router.post('/room/:roomId/send-all-qrcode', [verifyJwtToken], sendRoomQRCodeMail)
 router.put('/room/:roomId/session/:sessionId', [verifyJwtToken, ...updateRoomSessionValidator], updateRoomSession)
 router.delete('/room/:roomId/session/:sessionId', [verifyJwtToken], deleteRoomSession)
 router.get('/room/:roomId/session/:sessionId/presence', [verifyJwtToken], getGuestPresencePagination)
