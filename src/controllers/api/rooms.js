@@ -4,7 +4,7 @@ const responses = require('../../constants/responses')
 const validationResponseMaker = require('../../utils/validation-response-maker')
 const responseMaker = require('../../utils/response-maker')
 const { Op } = require('sequelize')
-const QRCode = require('qrcode')
+// const QRCode = require('qrcode')
 const ejs = require('ejs')
 const emailQueue = require('../../queue/email-queue')
 const { ejsViewPath } = require('../../utils/ejs-util')
@@ -227,12 +227,13 @@ function sendRoomQRCodeMail (req, res) {
         subject: 'Presence QR Code',
         html: await ejs.renderFile(ejsViewPath('mail'), {
           guestName: guest.name,
-          roomName: room.name
-        }),
-        attachments: [{
-          filename: 'qrcode.png',
-          content: (await QRCode.toBuffer(guest.key, { errorCorrectionLevel: 'H', width: 300, margin: 2 })).toString('base64')
-        }]
+          roomName: room.name,
+          qrCode: `https://barcode.orcascan.com?type=qr&data=${guest.key}&format=png`
+        })
+        // attachments: [{
+        //   filename: 'qrcode.png',
+        //   content: (await QRCode.toBuffer(guest.key, { errorCorrectionLevel: 'H', width: 300, margin: 2 })).toString('base64')
+        // }]
       }))
 
       const mailResults = await Promise.all(mailPromises)

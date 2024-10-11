@@ -7,6 +7,10 @@ const { Op } = require('sequelize')
 const { guestImageStoragePath } = require('../../middlewares/upload-guest-profile-image')
 const fs = require('fs')
 const QRCode = require('qrcode')
+const emailQueue = require('../../queue/email-queue')
+const { resendVerifiedDomain } = require('../../utils/resend')
+const { ejsViewPath } = require('../../utils/ejs-util')
+const ejs = require('ejs')
 
 async function getRoomGuestPagination (req, res) {
   try {
@@ -205,6 +209,17 @@ function addRoomGuest (req, res) {
         address,
         email,
         phone
+      })
+
+      emailQueue.add({
+        from: `Siensi <siensi@${resendVerifiedDomain}>`,
+        to: [guest.email],
+        subject: 'Presence QR Code',
+        html: await ejs.renderFile(ejsViewPath('mail'), {
+          guestName: guest.name,
+          roomName: room.name,
+          qrCode: `https://barcode.orcascan.com?type=qr&data=${guest.key}&format=png`
+        })
       })
 
       const data = {
