@@ -287,6 +287,9 @@ async function getGuestPresencePagination (req, res) {
       },
       limit: currentLimit,
       offset,
+      order: [
+        ['createdAt', 'DESC']
+      ],
       include: [
         {
           required: true,
