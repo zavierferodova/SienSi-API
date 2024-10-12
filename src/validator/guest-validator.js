@@ -14,8 +14,8 @@ const createRoomGuestValidator = [
   body('gender').notEmpty().withMessage('gender is required'),
   body('gender').isIn(['male', 'female']).withMessage('gender is not recognized'),
   body('address').isLength({ max: 255 }).withMessage('address is too long'),
-  body('phone').optional().isNumeric().withMessage('phone allow number only'),
   body('phone').optional().isLength({ max: 20 }).withMessage('phone is too long'),
+  body('phone').optional({ checkFalsy: true }).isNumeric().withMessage('phone allow number only'),
   check(['roomId', 'key']).custom(async (value, { req, path }) => {
     if (path === 'key') {
       const roomId = req.params.roomId

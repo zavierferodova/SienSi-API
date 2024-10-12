@@ -16,8 +16,8 @@ const mainInsights = async (req, res) => {
         include: [
           'room.id',
           [sequelize.fn('COUNT', sequelize.col('sessions.id')), 'totalSessions'],
-          [sequelize.fn('COUNT', sequelize.col('guests.id')), 'totalGuests'],
-          [sequelize.literal('COUNT(sessions.id) * COUNT(guests.id)'), 'totalRoomAttendances']
+          [sequelize.literal('COUNT(guests.id) OVER()'), 'totalGuests'],
+          [sequelize.literal('COUNT(sessions.id) * COUNT(guests.id) OVER()'), 'totalRoomAttendances']
         ]
       },
       include: [
@@ -30,6 +30,8 @@ const mainInsights = async (req, res) => {
       ],
       group: ['room.id']
     })
+
+    console.log(JSON.stringify(rooms, null, 2))
 
     const roomAttendances = rooms.map(room => room.dataValues.totalRoomAttendances)
     const totalAttendances = roomAttendances.reduce((acc, curr) => acc + curr, 0)
@@ -91,22 +93,27 @@ const topRoomWithGuests = async (req, res) => {
 const topRoomWithAttendances = async (req, res) => {
   try {
     const sqlQuery = `
-        SELECT rooms.id, rooms.name, 
-        COUNT(guests.id) * COUNT(sessions.id) AS totalAttendances, 
-        COUNT(attendances.id) OVER() AS realAttendances,
-        (COUNT(attendances.id) OVER() * 100 / (COUNT(guests.id) * COUNT(sessions.id))) AS percentageAttendance
-        FROM rooms
-        LEFT JOIN sessions ON rooms.id = sessions.roomId
-        LEFT JOIN guests ON guests.roomId = rooms.id
-        LEFT JOIN attendances ON sessions.id = attendances.sessionId
-        GROUP BY rooms.id
-        LIMIT 5;
+      SELECT rooms.id, rooms.name,
+      COUNT(guests.id) OVER() AS totalGuest,
+      COUNT(sessions.id) AS totalSession,
+      COUNT(guests.id) OVER() * COUNT(sessions.id) AS totalAttendances, 
+      COUNT(attendances.id) AS realAttendances,
+      (COUNT(attendances.id) * 100.0 / NULLIF(COUNT(guests.id)  OVER() * COUNT(sessions.id), 0)) AS percentageAttendance
+      FROM rooms
+      LEFT JOIN sessions ON rooms.id = sessions.roomId
+      LEFT JOIN guests ON guests.roomId = rooms.id
+      LEFT JOIN attendances ON sessions.id = attendances.sessionId
+      GROUP BY rooms.id
+      ORDER BY percentageAttendance DESC
+      LIMIT 5;
     `
 
     const rooms = await sequelize.query(sqlQuery, {
       model: Room,
       mapToModel: true
     })
+
+    console.log(rooms)
 
     const data = rooms.map(room => ({
       id: room.dataValues.id,
