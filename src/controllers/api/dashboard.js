@@ -31,8 +31,6 @@ const mainInsights = async (req, res) => {
       group: ['room.id']
     })
 
-    console.log(JSON.stringify(rooms, null, 2))
-
     const roomAttendances = rooms.map(room => room.dataValues.totalRoomAttendances)
     const totalAttendances = roomAttendances.reduce((acc, curr) => acc + curr, 0)
     const realAttendances = await Attendance.count()
@@ -112,8 +110,6 @@ const topRoomWithAttendances = async (req, res) => {
       model: Room,
       mapToModel: true
     })
-
-    console.log(rooms)
 
     const data = rooms.map(room => ({
       id: room.dataValues.id,

@@ -382,7 +382,7 @@ function guestPresence (req, res) {
 
       if (attendanceExists) {
         return responseMaker(res, null, {
-          ...responses.badRequest,
+          ...responses.conflict,
           message: 'Guest presence already recorded'
         })
       }
