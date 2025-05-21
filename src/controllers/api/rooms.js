@@ -268,11 +268,68 @@ function sendRoomQRCodeMail (req, res) {
   }
 }
 
+function sendGuestQRCodeMail (req, res) {
+  try {
+    return validationResponseMaker(req, res, async () => {
+      const { roomId, guestId } = req.params
+      const room = await Room.findByPk(roomId)
+
+      if (!room) {
+        return responseMaker(res, null, {
+          ...responses.notFound,
+          message: 'Room not found'
+        })
+      }
+
+      const guest = await Guest.findByPk(guestId)
+
+      if (!guest) {
+        return responseMaker(res, null, {
+          ...responses.notFound,
+          message: 'Guest not found'
+        })
+      }
+
+      const mailPromise = async (guest) => ({
+        from: `Siensi <siensi@${resendVerifiedDomain}>`,
+        to: [guest.email],
+        subject: 'Presence QR Code',
+        html: await ejs.renderFile(ejsViewPath('mail'), {
+          guestName: guest.name,
+          roomName: room.name,
+          qrCode: `https://barcode.orcascan.com?type=qr&data=${guest.key}&format=png`
+        })
+        // attachments: [{
+        //   filename: 'qrcode.png',
+        //   content: (await QRCode.toBuffer(guest.key, { errorCorrectionLevel: 'H', width: 300, margin: 2 })).toString('base64')
+        // }]
+      })
+
+      const mailData = await mailPromise(guest)
+
+      emailQueue.add({
+        ...mailData
+      })
+
+      return responseMaker(res, null, {
+        ...responses.success,
+        message: 'Success to send QR code to email'
+      })
+    })
+  } catch (error) {
+    return responseMaker(res, null, {
+      ...responses.error,
+      message: error.message
+    })
+  }
+}
+
 module.exports = {
   getRoomPagination,
   getRoom,
   addRoom,
   sendRoomQRCodeMail,
+  sendGuestQRCodeMail,
   updateRoom,
   deleteRoom
 }
