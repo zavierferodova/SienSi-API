@@ -461,7 +461,7 @@
 					"response": []
 				},
 				{
-					"name": "Send Mail QR Code",
+					"name": "Send All Mail QR Code",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -472,7 +472,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/room/{{roomId}}/send-all-qrcode",
+							"raw": "{{host}}/api/room/{{roomId}}/send-all-qrcode ",
 							"host": [
 								"{{host}}"
 							],
@@ -480,7 +480,35 @@
 								"api",
 								"room",
 								"{{roomId}}",
-								"send-all-qrcode"
+								"send-all-qrcode "
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Guest Mail QR Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Access-Token",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/room/{{roomId}}/guest/{{guestId}}/send-qrcode",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"room",
+								"{{roomId}}",
+								"guest",
+								"{{guestId}}",
+								"send-qrcode"
 							]
 						}
 					},
